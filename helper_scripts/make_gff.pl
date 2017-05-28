@@ -9,7 +9,7 @@ while (<>) {
     if ($data[2] eq "gene") {
         my ($gene) = ($data[8] =~ /Name=([^;]+)/);
         if (! defined $gene) {
-            my ($gene) = ($data[8] =~ /ID=([^;]+)/);
+            ($gene) = ($data[8] =~ /ID=([^;]+)/);
         }
         print $data[0], $gene, $data[3], $data[4];
     }
