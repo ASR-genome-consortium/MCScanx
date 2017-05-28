@@ -2,7 +2,7 @@ use Bio::SeqIO;
 use Bio::Align::Utilities qw(aa_to_dna_aln);
 use Bio::Seq::EncodedSeq;
 use Bio::AlignIO;
-use Bio::Tools::Run::Alignment::Clustalw;
+#use Bio::Tools::Run::Alignment::Clustalw;
 use Bio::Align::DNAStatistics;
 use Getopt::Std;
 %options=();
@@ -45,6 +45,7 @@ print output "$line\n";
 next;
 }
 @a=split("\t",$line);
+$name="$a[1]-$a[2]";
 if(!exists $s{$a[1]}||!exists $s{$a[2]})
 {
 print output "$line\t-2\t-2\n";
@@ -52,20 +53,20 @@ print output "$line\t-2\t-2\n";
 #if(exists $s{$a[1]} && exists $s{$a[2]})
 else
 {
-open(output1,">temp7734.cds");
+open(output1,">$name.cds");
 print output1 "\>$a[1]\n$s{$a[1]}\>$a[2]\n$s{$a[2]}";
 close(output1);
-$tempcds = Bio::SeqIO -> new(-file => 'temp7734.cds', -format => 'fasta');
+$tempcds = Bio::SeqIO -> new(-file => "$name.cds", -format => 'fasta');
 %dna_hash;
 $cds1=$tempcds->next_seq;
 $dna_hash{$cds1 -> display_id} = $cds1;
 $cds2=$tempcds->next_seq;
 $dna_hash{$cds2 -> display_id} = $cds2;
-$os_prot = Bio::SeqIO -> new(-file=> '>temp7734.pro', -format=>'fasta');
+$os_prot = Bio::SeqIO -> new(-file=> ">$name.pro", -format=>'fasta');
 $os_prot -> write_seq($cds1 -> translate());
 $os_prot -> write_seq($cds2 -> translate());
-system("clustalw -infile='temp7734.pro'");
-$get_prot_aln = Bio::AlignIO -> new(-file=>"temp7734.aln", -format=>"CLUSTALW");
+system("clustalw2 -infile=$name.pro");
+$get_prot_aln = Bio::AlignIO -> new(-file=>"$name.aln", -format=>"CLUSTALW");
 $prot_aln = $get_prot_aln -> next_aln();
 $dna_aln = &aa_to_dna_aln($prot_aln, \%dna_hash);
 eval{
@@ -91,6 +92,7 @@ $stats = Bio::Align::DNAStatistics->new();
    if($Ds !~ /\d/){$Ds = -2;}
 print output "$line\t$Dn\t$Ds\n";
 };
+system("rm $name.*");
 if($@)
 {
 print output "$line\t-2\t-2\n";
@@ -98,4 +100,3 @@ next;
 }
 }
 }
-system("rm temp7734.*");
