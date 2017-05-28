@@ -8,6 +8,7 @@
 #include <map>
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 using namespace std;
 

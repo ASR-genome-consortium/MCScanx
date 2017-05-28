@@ -5,6 +5,7 @@
 #define _GNU_SOURCE
 #endif
 
+#include <stdlib.h>
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
