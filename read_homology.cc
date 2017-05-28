@@ -291,8 +291,8 @@ void feed_dag(const string &mol_pair)
 
     // sort by both axis and remove redundant matches within
     // a given window length (default 50kb)
-    //filter_matches_x();
-    //filter_matches_y();
+    filter_matches_x();
+    filter_matches_y();
 
     dag_main(score, mol_pair);
 }
