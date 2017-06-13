@@ -17,8 +17,9 @@ while (<GFF>) {
 my ($b1_chr, $b1_start, $b1_stop, $b2_chr, $b2_start, $b2_stop, $orientation, $score, $alignment_block);
 my @ks;
 while (<COL>) {
+    chomp;
     #TODO: add threshold criteria for acceptance
-    if (/^## Alignment (\d+): score=([0-9.]+) e_value=([-0-9e.]+) N=(\d+) \S+ (plus|minus)/) {
+    if (/^## Alignment (\d+)(: score=([0-9.]+) e_value=([-0-9e.]+) N=(\d+) \S+ (plus|minus))?/) {
         if (defined $b1_start) {
             @ks = sort {$a <=> $b} @ks;
             my $median_ks;
@@ -32,7 +33,7 @@ while (<COL>) {
             print $b2_chr, "mcscanx", "syntenic_region", $b2_start, $b2_stop, $score, ($orientation eq "plus" ? "+" : "-"), ".", "ID=$name;Name=$name;Target=$b1_chr $b1_start $b1_stop".(defined $median_ks ? ";median_Ks=$median_ks" : "");
         }
         $alignment_block = $1;
-        $score = $2;
+        $score = $4;
         $orientation = $5;
         $b1_chr = undef;
         $b1_start = undef;
