@@ -34,7 +34,7 @@ while (<COL>) {
         }
         $alignment_block = $1;
         $score = $4;
-        $orientation = $5;
+        $orientation = $6;
         $b1_chr = undef;
         $b1_start = undef;
         $b1_stop = undef;
