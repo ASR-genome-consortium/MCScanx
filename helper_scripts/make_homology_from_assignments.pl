@@ -15,18 +15,25 @@ while (<>) {
     my ($gene, $family) = split /\t/;
     my ($species) = ($gene =~ /^([^.]+)/);
     if ($species{$species} || scalar(@species) == 0) {
-        $family_assignments{$family}->{$gene} = 1;
+        $family_assignments{$family}->{$species}->{$gene} = 1;
     }
 }
 
 foreach my $family (keys %family_assignments) {
-    my @genes = keys %{$family_assignments{$family}};
-    if (defined $limit && scalar(@genes) > $limit) {
-        next;
+    my @species = keys %{$family_assignments{$family}};
+    my @fam_genes;
+    foreach my $species (@species) {
+        my @species_genes = keys %{$family_assignments{$family}->{$species}};
+        if (defined $limit && scalar(@species_genes) > $limit) {
+            next;
+        }
+        else {
+            push @fam_genes, @species_genes;
+        }
     }
-    for (my $i=0; $i < @genes; $i++) {
-        for (my $j=1; $j < @genes; $j++) {
-            print $genes[$i],"\t",$genes[$j],"\n";
+    for (my $i=0; $i < @fam_genes; $i++) {
+        for (my $j=$i+1; $j < @fam_genes; $j++) {
+            print $fam_genes[$i],"\t",$fam_genes[$j],"\n";
         }
     }
 }
