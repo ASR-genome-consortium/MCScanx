@@ -3,7 +3,9 @@ use strict;
 use Getopt::Long;
 my @species;
 my $limit;
+my $species_prefix_regex = "[^.]+";
 GetOptions(
+    "species_prefix_regex=s" => \$species_prefix_regex,
     "species=s" => \@species,
     "limit=i" => \$limit,
 );
@@ -13,7 +15,8 @@ my %family_assignments;
 while (<>) {
     chomp;
     my ($gene, $family) = split /\t/;
-    my ($species) = ($gene =~ /^([^.]+)/);
+    my ($species) = ($gene =~ /^($species_prefix_regex)/);
+    next unless defined $species;
     if ($species{$species} || scalar(@species) == 0) {
         $family_assignments{$family}->{$species}->{$gene} = 1;
     }
